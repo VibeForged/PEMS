@@ -1,9 +1,12 @@
 package com.example.pems.service;
 
 import com.example.pems.entity.Income;
+import com.example.pems.entity.IncomeCategory;
+import com.example.pems.exception.BadRequestException;
 import com.example.pems.entity.User;
 import com.example.pems.repository.IncomeRepository;
 import com.example.pems.repository.UserRepository;
+import com.example.pems.repository.IncomeCategoryRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -16,13 +19,16 @@ public class IncomeService {
 
     private final IncomeRepository incomeRepository;
     private final UserRepository userRepository;
+    private final IncomeCategoryRepository incomeCategoryRepository;
 
     public IncomeService(
             IncomeRepository incomeRepository,
-            UserRepository userRepository) {
+            UserRepository userRepository,
+            IncomeCategoryRepository incomeCategoryRepository) {
 
         this.incomeRepository = incomeRepository;
         this.userRepository = userRepository;
+        this.incomeCategoryRepository = incomeCategoryRepository;
     }
 
     public Page<Income> getIncomes(
@@ -66,6 +72,9 @@ public class IncomeService {
                         new RuntimeException("User not found"));
 
         income.setUser(user);
+        income.setIncomeCategory(incomeCategoryRepository.findById(income.getIncomeCategory().getId())
+                .filter(IncomeCategory::isActive)
+                .orElseThrow(() -> new BadRequestException("Selected income category is unavailable")));
 
         return incomeRepository.save(income);
     }
@@ -82,8 +91,12 @@ public class IncomeService {
                                 .equals(email))
                 .map(existingIncome -> {
 
+                    var category = incomeCategoryRepository.findById(updatedIncome.getIncomeCategory().getId())
+                            .filter(IncomeCategory::isActive)
+                            .orElseThrow(() -> new BadRequestException("Selected income category is unavailable"));
+
                     existingIncome.setIncomeCategory(
-                            updatedIncome.getIncomeCategory());
+                            category);
 
                     existingIncome.setAmount(
                             updatedIncome.getAmount());

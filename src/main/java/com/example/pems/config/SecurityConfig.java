@@ -67,6 +67,14 @@ public class SecurityConfig {
                         // Register
                         .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
 
+                        // Admin-only management APIs
+                        .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
+
+                        // Shared category catalog is read-only for users
+                        .requestMatchers(HttpMethod.POST, "/api/categories/**", "/api/income-categories/**").denyAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/categories/**", "/api/income-categories/**").denyAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/categories/**", "/api/income-categories/**").denyAll()
+
                         // Baaki sab JWT ke saath
                         .anyRequest().authenticated()
                 )

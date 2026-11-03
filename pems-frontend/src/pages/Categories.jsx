@@ -47,11 +47,12 @@ export default function Categories() {
     return (
         <div className="page">
             <h2>Categories</h2>
+            <p className="page-description">Categories are managed by the administrator.</p>
 
             <div className="two-columns">
                 <div>
                     <h3>Expense Categories</h3>
-                    <form onSubmit={addExpenseCat} className="form-row">
+                    <form onSubmit={addExpenseCat} className="form-row" hidden>
                         <input
                             placeholder="New category"
                             value={expenseName}
@@ -72,7 +73,7 @@ export default function Categories() {
 
                 <div>
                     <h3>Income Categories</h3>
-                    <form onSubmit={addIncomeCat} className="form-row">
+                    <form onSubmit={addIncomeCat} className="form-row" hidden>
                         <input
                             placeholder="New category"
                             value={incomeName}

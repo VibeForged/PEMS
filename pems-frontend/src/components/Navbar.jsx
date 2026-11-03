@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 export default function Navbar() {
     const navigate = useNavigate();
     const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const isAdmin = user.role === 'ADMIN';
 
     const [theme, setTheme] = useState(() => {
         return localStorage.getItem('theme') || 'light';
@@ -32,10 +33,16 @@ export default function Navbar() {
             <div className="nav-brand">💰 PEMS</div>
 
             <div className="nav-links">
-                <Link to="/dashboard">Dashboard</Link>
-                <Link to="/expenses">Expenses</Link>
-                <Link to="/incomes">Incomes</Link>
-                <Link to="/categories">Categories</Link>
+                {isAdmin ? <>
+                    <Link to="/admin">Admin Dashboard</Link>
+                    <Link to="/admin/users">Users</Link>
+                    <Link to="/admin/categories">Categories</Link>
+                </> : <>
+                    <Link to="/dashboard">Dashboard</Link>
+                    <Link to="/expenses">Expenses</Link>
+                    <Link to="/incomes">Incomes</Link>
+                    <Link to="/categories">Categories</Link>
+                </>}
             </div>
 
             <div className="nav-user">

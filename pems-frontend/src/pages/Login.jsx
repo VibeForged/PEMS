@@ -17,7 +17,7 @@ export default function Login() {
             localStorage.setItem('user', JSON.stringify(res.data));
 
             alert('Login successful!');
-            navigate('/dashboard');
+            navigate('/');
         } catch (err) {
             alert(err.response?.data?.message || 'Invalid email or password');
         }

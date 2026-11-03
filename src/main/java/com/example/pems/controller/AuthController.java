@@ -60,6 +60,12 @@ public class AuthController {
                     ));
         }
 
+        if (!user.isActive()) {
+            return ResponseEntity.status(403).body(Map.of(
+                    "message", "This account has been deactivated"
+            ));
+        }
+
         String token =
                 jwtService.generateToken(user.getEmail());
 
@@ -70,6 +76,7 @@ public class AuthController {
         response.put("userId", user.getId());
         response.put("name", user.getName());
         response.put("email", user.getEmail());
+        response.put("role", user.getRole());
         response.put("token", token);
 
         return ResponseEntity.ok(response);

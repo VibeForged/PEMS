@@ -14,6 +14,8 @@ CREATE TABLE IF NOT EXISTS users (
                                      name VARCHAR(100) NOT NULL,
     email VARCHAR(150) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
+    role VARCHAR(20) NOT NULL DEFAULT 'USER',
+    active BOOLEAN NOT NULL DEFAULT TRUE,
     created_at DATETIME NOT NULL,
     updated_at DATETIME NOT NULL
     );
@@ -21,11 +23,13 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS expense_categories (
                                                   id BIGINT AUTO_INCREMENT PRIMARY KEY,
                                                   name VARCHAR(100) NOT NULL UNIQUE
+    , active BOOLEAN NOT NULL DEFAULT TRUE
     );
 
 CREATE TABLE IF NOT EXISTS income_categories (
                                                  id BIGINT AUTO_INCREMENT PRIMARY KEY,
                                                  name VARCHAR(100) NOT NULL UNIQUE
+    , active BOOLEAN NOT NULL DEFAULT TRUE
     );
 
 CREATE TABLE IF NOT EXISTS expenses (
@@ -63,20 +67,20 @@ CREATE TABLE IF NOT EXISTS incomes (
 -- DEFAULT DATA
 -- ============================================
 
-INSERT IGNORE INTO expense_categories (name) VALUES
-('Food'),
-('Travel'),
-('Shopping'),
-('Bills'),
-('Entertainment'),
-('Health'),
-('Education'),
-('Rent');
+INSERT IGNORE INTO expense_categories (name, active) VALUES
+('Food', TRUE),
+('Travel', TRUE),
+('Shopping', TRUE),
+('Bills', TRUE),
+('Entertainment', TRUE),
+('Health', TRUE),
+('Education', TRUE),
+('Rent', TRUE);
 
-INSERT IGNORE INTO income_categories (name) VALUES
-('Salary'),
-('Freelance'),
-('Business'),
-('Investment'),
-('Gift'),
-('Other');
+INSERT IGNORE INTO income_categories (name, active) VALUES
+('Salary', TRUE),
+('Freelance', TRUE),
+('Business', TRUE),
+('Investment', TRUE),
+('Gift', TRUE),
+('Other', TRUE);

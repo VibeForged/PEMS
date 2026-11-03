@@ -350,6 +350,21 @@ body.dark .navbar {
     animation: fadeInUp 0.4s ease-out 0.05s both;
 }
 
+.page-description {
+    color: var(--text-muted);
+    margin: -12px 0 24px;
+}
+
+.admin-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+}
+
+.page .list li > button {
+    display: none;
+}
+
 /* ---------- 8. Forms ---------- */
 .form-row {
     display: flex;

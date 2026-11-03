@@ -17,6 +17,10 @@ public class IncomeCategoryService {
     }
 
     public List<IncomeCategory> getAllCategories() {
+        return incomeCategoryRepository.findByActiveTrue();
+    }
+
+    public List<IncomeCategory> getAllCategoriesForAdmin() {
         return incomeCategoryRepository.findAll();
     }
 
@@ -40,11 +44,16 @@ public class IncomeCategoryService {
     }
 
     public boolean deleteCategory(Long id) {
-        if (!incomeCategoryRepository.existsById(id)) {
-            return false;
-        }
+        return setCategoryActive(id, false);
+    }
 
-        incomeCategoryRepository.deleteById(id);
-        return true;
+    public boolean setCategoryActive(Long id, boolean active) {
+        return incomeCategoryRepository.findById(id)
+                .map(category -> {
+                    category.setActive(active);
+                    incomeCategoryRepository.save(category);
+                    return true;
+                })
+                .orElse(false);
     }
 }

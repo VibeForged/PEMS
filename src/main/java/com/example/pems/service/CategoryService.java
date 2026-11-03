@@ -17,6 +17,10 @@ public class CategoryService {
     }
 
     public List<Category> getAllCategories() {
+        return categoryRepository.findByActiveTrue();
+    }
+
+    public List<Category> getAllCategoriesForAdmin() {
         return categoryRepository.findAll();
     }
 
@@ -37,11 +41,16 @@ public class CategoryService {
     }
 
     public boolean deleteCategory(Long id) {
-        if (!categoryRepository.existsById(id)) {
-            return false;
-        }
+        return setCategoryActive(id, false);
+    }
 
-        categoryRepository.deleteById(id);
-        return true;
+    public boolean setCategoryActive(Long id, boolean active) {
+        return categoryRepository.findById(id)
+                .map(category -> {
+                    category.setActive(active);
+                    categoryRepository.save(category);
+                    return true;
+                })
+                .orElse(false);
     }
 }

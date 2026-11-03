@@ -1,9 +1,12 @@
 package com.example.pems.service;
 import com.example.pems.exception.ResourceNotFoundException;
+import com.example.pems.exception.BadRequestException;
 import com.example.pems.entity.Expense;
+import com.example.pems.entity.Category;
 import com.example.pems.entity.User;
 import com.example.pems.repository.ExpenseRepository;
 import com.example.pems.repository.UserRepository;
+import com.example.pems.repository.CategoryRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -16,13 +19,16 @@ public class ExpenseService {
 
     private final ExpenseRepository expenseRepository;
     private final UserRepository userRepository;
+    private final CategoryRepository categoryRepository;
 
     public ExpenseService(
             ExpenseRepository expenseRepository,
-            UserRepository userRepository) {
+            UserRepository userRepository,
+            CategoryRepository categoryRepository) {
 
         this.expenseRepository = expenseRepository;
         this.userRepository = userRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     public Page<Expense> getExpenses(
@@ -86,6 +92,9 @@ public class ExpenseService {
                         new RuntimeException("User not found"));
 
         expense.setUser(user);
+        expense.setCategory(categoryRepository.findById(expense.getCategory().getId())
+                .filter(Category::isActive)
+                .orElseThrow(() -> new BadRequestException("Selected expense category is unavailable")));
 
         return expenseRepository.save(expense);
     }
@@ -102,8 +111,12 @@ public class ExpenseService {
                                 .equals(email))
                 .map(existingExpense -> {
 
+                    var category = categoryRepository.findById(updatedExpense.getCategory().getId())
+                            .filter(Category::isActive)
+                            .orElseThrow(() -> new BadRequestException("Selected expense category is unavailable"));
+
                     existingExpense.setCategory(
-                            updatedExpense.getCategory());
+                            category);
 
                     existingExpense.setAmount(
                             updatedExpense.getAmount());
