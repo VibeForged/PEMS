@@ -359,11 +359,11 @@ cd personal-expense-management-system
 
 ## Step 2 — Create Environment Variables
 
-Create a `.env` file in the project root:
+Copy the supplied template, then edit the values:
 
-```env
-JWT_SECRET=<your-generated-jwt-secret>
-DB_PASSWORD=rootpassword
+```powershell
+Copy-Item example.env .env
+notepad .env
 ```
 
 Generate a secure JWT secret:
@@ -472,53 +472,30 @@ If you prefer running the backend, frontend, and database separately, follow the
 
 ## Step 1 — Configure MySQL
 
-Create the database:
-
-```sql
-CREATE DATABASE pems_db;
-USE pems_db;
-```
-
-Run the initialization script:
-
-```bash
-mysql -u root -p pems_db < init.sql
-```
-
-The script creates the required database tables and seeds default categories.
+Start a local MySQL server and make sure the account configured in `.env` can
+create databases. The backend creates `pems_db` and its tables on first start.
+Run `init.sql` only if you want the supplied default category seed data.
 
 ---
 
 ## Step 2 — Configure Backend
 
-Set the required environment variables.
-
-### macOS / Linux
-
-```bash
-export DB_PASSWORD=your_mysql_root_password
-export JWT_SECRET=$(openssl rand -base64 64)
-```
-
-### Windows PowerShell
+Create your local configuration once:
 
 ```powershell
-$env:DB_PASSWORD="your_mysql_root_password"
-$env:JWT_SECRET=[Convert]::ToBase64String((1..64 | ForEach-Object { Get-Random -Maximum 256 }))
+Copy-Item example.env .env
+notepad .env
 ```
 
-If your MySQL server uses a different host or port, update:
-
-```text
-src/main/resources/application.properties
-```
+Set `DB_PASSWORD` to your MySQL password. Keep the default datasource URL for
+MySQL on `localhost:3306`; otherwise update `SPRING_DATASOURCE_URL` in `.env`.
 
 ---
 
 ## Step 3 — Run Backend
 
-```bash
-./mvnw spring-boot:run
+```powershell
+.\run.ps1
 ```
 
 Backend:
@@ -533,9 +510,9 @@ http://localhost:8080
 
 Open another terminal:
 
-```bash
+```powershell
 cd pems-frontend
-npm install
+npm ci
 npm run dev
 ```
 
